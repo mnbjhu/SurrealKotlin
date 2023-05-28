@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="dsl-jslegacy-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/dsl/build/libs</output-path>
+    <root id="archive" name="dsl-jslegacy-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="SurrealKotlin.dsl.jsMain" />
+    </root>
+  </artifact>
+</component>
