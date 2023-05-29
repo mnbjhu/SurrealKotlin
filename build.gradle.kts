@@ -13,9 +13,9 @@ repositories {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "uk.gibby"
+            groupId = "com.github.mnbjhu"
             version = "0.0.1-PREVIEW-1"
-            artifactId = "surrealkotlin"
+            artifactId = "SurrealKotlin"
         }
     }
 }
