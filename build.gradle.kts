@@ -3,7 +3,7 @@ plugins {
     kotlin("multiplatform").version("1.8.21").apply(false)
     id("com.google.devtools.ksp") version "1.8.21-1.0.11"
     kotlin("plugin.serialization") version "1.8.21"
-    id("maven-publish")
+    `maven-publish`
 }
 repositories {
     mavenCentral()
