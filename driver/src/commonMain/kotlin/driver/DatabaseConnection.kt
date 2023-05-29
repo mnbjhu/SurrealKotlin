@@ -12,6 +12,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import uk.gibby.dsl.model.rpc.RpcRequest
 import driver.rpc.RpcResponse
+import driver.rpc.RpcResponseSerializer
 
 class DatabaseConnection(private val host: String, private val port: Int = 8000) {
 
@@ -27,8 +28,15 @@ class DatabaseConnection(private val host: String, private val port: Int = 8000)
                 it.incoming.receiveAsFlow().collect {
                     it as Frame.Text
                     println(it.readText())
-                    val response = surrealJson.decodeFromString<RpcResponse>(it.readText())
+                    println(requests.toList().joinToString { it.toString() })
+                    val response = try {
+                        surrealJson.decodeFromString(RpcResponseSerializer, it.readText())
+                    } catch (e: Exception) {
+                        requests.forEach { (_, r) ->  r.cancel(CancellationException("Failed to decode incoming response: ${it.readText()}\n${e.message}"))}
+                        throw e
+                    }
                     val request = requests[response.id]
+                    println(request)
                     if (request == null) requests.forEach { (_, r) ->  r.cancel(CancellationException("Received a request with an unknown id: ${response.id} body: $response"))}
                     else when(response) {
                         is RpcResponse.Success -> request.send(response.result)

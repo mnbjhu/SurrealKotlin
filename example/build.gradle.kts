@@ -62,6 +62,10 @@ kotlin {
             }
         }
         val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0-RC")
+            }
         }
         val jvmMain by getting {
         }
@@ -91,10 +95,16 @@ kotlin {
     }
 }
 
-dependencies {
+dependencies  {
     add("kspCommonMainMetadata", project(":processor"))
-    add("kspJvm", project(":processor"))
-    add("kspJvmTest", project(":processor")) // Not doing anything because there's no test source set for JVM
-    add("kspJs", project(":processor"))
-    // There is no processing for the Linux x64 main source set, because kspLinuxX64 isn't specified
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }

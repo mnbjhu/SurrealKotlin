@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 
-class RpcResponseSerializer: KSerializer<RpcResponse> {
+object RpcResponseSerializer: KSerializer<RpcResponse> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("rpc") {
         element("id", String.serializer().descriptor)
         element("result", JsonElement.serializer().descriptor)

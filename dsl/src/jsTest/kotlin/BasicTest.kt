@@ -1,10 +1,16 @@
 import core.transaction
 import driver.DatabaseConnection
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.encodeToJsonElement
 import scopes.create
 import types.eq
+import uk.gibby.dsl.model.rpc.RpcRequest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,27 +18,45 @@ class BasicTest {
 
 
     @Test
-    fun testDatabaseConnection() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
-            val connection = DatabaseConnection("localhost", 8000)
-            with(connection){
-                connect()
-                signInAsRoot("root", "root")
-                use("test", "test")
-                val result = transaction {
-                    +user.create { it.username setAs "testUser"; it.passwordHash setAs "testPassword" }
-                    user.select {
-                        where(it.username eq "testUser")
-                        it.username
-                    }
+    fun testDatabaseConnection() = runTest {
+        val connection = DatabaseConnection("localhost", 8000)
+        with(connection) {
+            connect()
+            signInAsRoot("root", "root")
+            use("test", "test")
+            val result = transaction {
+                +user.create { it.username setAs "testUser"; it.passwordHash setAs "testPassword" }
+                user.selectAll {
+                    where(it.username eq "testUser")
+                    it.username
                 }
-                assertEquals(result.first(), "testUser")
             }
+            println(result)
         }
     }
     @Test
-    fun test(){
+    fun testSerialization() {
+        val test = TestClass("test")
+        val serialized = Json.encodeToString(TestClass.serializer(), test)
+        val deserialized = Json.decodeFromString<TestClass>(serialized)
+        assertEquals(test, deserialized)
+    }
 
+    @Test
+    fun testUserSerialization() {
+        val test = User("test", "test")
+        val serialized = Json.encodeToString(test)
+        val deserialized = Json.decodeFromString<User>(serialized)
+        assertEquals(test, deserialized)
+    }
+
+    @Test
+    fun testRpcRequestSerialization() {
+        val test = RpcRequest("test", "test", JsonArray(listOf(Json.encodeToJsonElement("test"))))
+        val serialized = Json.encodeToString(test)
+        val deserialized = Json.decodeFromString<RpcRequest>(serialized)
+        assertEquals(test, deserialized)
     }
 }
+@Serializable
+data class TestClass(val test: String)

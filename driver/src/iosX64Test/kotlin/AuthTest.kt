@@ -1,6 +1,7 @@
 import driver.DatabaseConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 
 class AuthTest {
@@ -9,7 +10,7 @@ class AuthTest {
     @Test
     fun testLoginAsRoot() {
         println("running")
-        CoroutineScope(Dispatchers.Default).coroutineContext.la{
+        runBlocking {
             db.connect()
             db.signInAsRoot("root", "root")
             db.invalidate()

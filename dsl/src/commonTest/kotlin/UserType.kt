@@ -1,9 +1,11 @@
 import core.Table
+import kotlinx.serialization.Serializable
 import types.*
 import kotlin.String
 import kotlin.jvm.JvmInline
 
 
+@Serializable
 data class User(val username: String, val passwordHash: String)
 @JvmInline
 public value class UserRecord(
