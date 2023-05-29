@@ -67,5 +67,6 @@ fun generateRelationType(element: KSClassDeclaration, resolver: Resolver, logger
         .addGetReferenceFunction()
         .addCreateReferenceFunction(relationTypeName)
         .addFields(element.getAllProperties(), resolver, logger)
+        .addFieldFunction(element.getAllProperties().map { it.simpleName.asString() }.toList())
         .build()
 }

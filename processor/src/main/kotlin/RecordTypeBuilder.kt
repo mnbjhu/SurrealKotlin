@@ -9,6 +9,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import types.RecordLink
 import types.RecordType
+import types.Reference
 import types.getFieldType
 import kotlin.reflect.KClass
 
@@ -26,6 +27,7 @@ fun generateRecordTypeClass(element: KSClassDeclaration, resolver: Resolver, log
         .addCreateReferenceFunction(recordTypeName)
         .addGetReferenceFunction()
         .addFields(element.getAllProperties(), resolver, logger)
+        .addFieldFunction(element.getAllProperties().map { it.simpleName.asString() }.toList())
         .build()
 }
 
@@ -48,6 +50,7 @@ fun TypeSpec.Builder.addFields(elements: Sequence<KSPropertyDeclaration>, resolv
     return this
 }
 
+
 fun TypeSpec.Builder.addReferenceProperty(): TypeSpec.Builder {
     primaryConstructor(
         FunSpec.constructorBuilder()
@@ -58,6 +61,16 @@ fun TypeSpec.Builder.addReferenceProperty(): TypeSpec.Builder {
         PropertySpec.builder("reference", String::class)
             .addModifiers(KModifier.PRIVATE)
             .initializer("reference")
+            .build()
+    )
+    return this
+}
+fun TypeSpec.Builder.addFieldFunction(propertyNames: List<String>): TypeSpec.Builder {
+    addFunction(
+        FunSpec.builder("getFields")
+            .returns(typeNameOf<Map<String, Reference<*>>>())
+            .addModifiers(KModifier.OVERRIDE)
+            .addCode("return mapOf(${propertyNames.joinToString { "\"$it\" to $it" }})")
             .build()
     )
     return this

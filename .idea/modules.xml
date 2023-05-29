@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/driver/SurrealKotlin.driver.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/driver/SurrealKotlin.driver.jvmTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dsl/SurrealKotlin.dsl.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/dsl/SurrealKotlin.dsl.jvmTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/SurrealKotlin.example.jsMain.iml" filepath="$PROJECT_DIR$/.idea/modules/example/SurrealKotlin.example.jsMain.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/SurrealKotlin.example.jsTest.iml" filepath="$PROJECT_DIR$/.idea/modules/example/SurrealKotlin.example.jsTest.iml" />
     </modules>

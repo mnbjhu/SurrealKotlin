@@ -17,5 +17,6 @@ fun generateObjectType(element: KSClassDeclaration, resolver: Resolver, logger: 
         .addGetReferenceFunction()
         .addCreateReferenceFunction(objectTypeName)
         .addFields(element.getAllProperties(), resolver, logger)
+        .addFieldFunction(element.getAllProperties().map { it.simpleName.asString() }.toList())
         .build()
 }
