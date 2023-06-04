@@ -1,6 +1,5 @@
 import core.transaction
 import driver.DatabaseConnection
-import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -10,7 +9,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.encodeToJsonElement
 import scopes.create
 import types.eq
-import uk.gibby.dsl.model.rpc.RpcRequest
+import driver.rpc.RpcRequest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

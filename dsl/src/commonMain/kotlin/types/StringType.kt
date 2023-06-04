@@ -1,6 +1,5 @@
 package types
 
-import functions.SurrealComparable
 import kotlin.jvm.JvmInline
 
 @JvmInline

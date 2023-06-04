@@ -11,7 +11,6 @@ import model.Linked
 class LinkedSerializer<T : Any>(
     private val tSerializer: KSerializer<T>
 ) : KSerializer<Linked<T>> {
-
     @OptIn(ExperimentalSerializationApi::class)
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor(tSerializer.descriptor.serialName + "Link") {
         element("id", String.serializer().descriptor)

@@ -2,7 +2,7 @@ package functions
 
 import driver.surrealJson
 import kotlinx.serialization.encodeToString
-import types.Reference
+import types.SurrealComparable
 import types.booleanType
 
 
@@ -16,4 +16,9 @@ inline infix fun <reified T> SurrealComparable<T>.greaterThan(other: T) = boolea
 inline infix fun <reified T> SurrealComparable<T>.lessThanOrEqualTo(other: T) = booleanType.createReference("(${getReference()} <= ${surrealJson.encodeToString(other)})")
 inline infix fun <reified T> SurrealComparable<T>.greaterThanOrEqualTo(other: T) = booleanType.createReference("(${getReference()} >= ${surrealJson.encodeToString(other)})")
 
-interface SurrealComparable<T>: Reference<T>
+inline infix fun <reified T> T.lessThan(other: SurrealComparable<T>) = booleanType.createReference("(${surrealJson.encodeToString(this)} < ${other.getReference()})")
+inline infix fun <reified T> T.greaterThan(other: SurrealComparable<T>) = booleanType.createReference("(${surrealJson.encodeToString(this)} > ${other.getReference()})")
+inline infix fun <reified T> T.lessThanOrEqualTo(other: SurrealComparable<T>) = booleanType.createReference("(${surrealJson.encodeToString(this)} <= ${other.getReference()})")
+inline infix fun <reified T> T.greaterThanOrEqualTo(other: SurrealComparable<T>) = booleanType.createReference("(${surrealJson.encodeToString(this)} >= ${other.getReference()})")
+
+

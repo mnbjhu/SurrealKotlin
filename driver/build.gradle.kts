@@ -61,10 +61,12 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.2")
                 implementation("io.ktor:ktor-client-core:2.2.2")
                 implementation("io.ktor:ktor-client-encoding:2.2.2")
-                implementation(kotlin("test"))
             }
         }
         val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
         }
         val jvmMain by getting {
             dependencies {

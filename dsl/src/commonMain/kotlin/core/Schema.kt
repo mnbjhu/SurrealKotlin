@@ -1,3 +1,5 @@
+
+@file:Suppress("UNCHECKED_CAST")
 package core
 
 import scopes.CodeBlockScope

@@ -17,7 +17,6 @@ open class SetScope {
 
     fun getSetString() = text.removeSuffix(",")
 
-
     infix fun <T, U : Reference<T>> U.setAs(value: U): UnitType {
         text += "${getReference()} = (${value.getReference()}),"
         return None
@@ -28,18 +27,7 @@ open class SetScope {
         return None
     }
 
-    infix fun <T, U : Reference<T>> ListType<T, U>.`to`(value: List<U>): UnitType {
-        text += "${getReference()} = [${value.joinToString { it.getReference() }}],"
-        return None
-    }
-
-
     inline infix fun <reified T> Reference<T>.setAs(value: T): UnitType {
-        _addParam("${getReference()} = ${surrealJson.encodeToString(value)},")
-        return None
-    }
-
-    inline infix fun <reified T> Reference<T>.`to`(value: T): UnitType {
         _addParam("${getReference()} = ${surrealJson.encodeToString(value)},")
         return None
     }

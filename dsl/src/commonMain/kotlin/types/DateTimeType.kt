@@ -1,7 +1,6 @@
 package types
 
 import kotlinx.datetime.Instant
-import functions.SurrealComparable
 import kotlin.jvm.JvmInline
 
 @JvmInline

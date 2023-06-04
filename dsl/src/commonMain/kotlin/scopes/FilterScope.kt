@@ -10,13 +10,5 @@ interface FilterScope {
 }
 
 interface ReturningFilterScope<T, U: RecordType<T>>: FilterScope, ReturningScope<T, U>
-
-class ReturningFilterScopeImpl<T, U: RecordType<T>>(val _type: U): ReturningFilterScope<T, U>, ReturningScope<T, U> by ReturningScopeImpl(_type), FilterScope by FilterScopeImpl(_type)
-
-/*
-class SettableFilterScope<T, U: RecordType<T>>(val _type: U): SetScope(), ReturningScope<T, U> by ReturningScopeImpl(_type), FilterScope by FilterScopeImpl(_type) {
-}
-
- */
-
-class SettableFilterScopeImpl<T, U: RecordType<T>>(val _type: U): SetScope(), ReturningFilterScope<T, U>, ReturningScope<T, U> by ReturningScopeImpl(_type), FilterScope by FilterScopeImpl(_type)
+class ReturningFilterScopeImpl<T, U: RecordType<T>>(private val _type: U): ReturningFilterScope<T, U>, ReturningScope<T, U> by ReturningScopeImpl(_type), FilterScope by FilterScopeImpl(_type)
+class SettableFilterScopeImpl<T, U: RecordType<T>>(private val _type: U): SetScope(), ReturningFilterScope<T, U>, ReturningScope<T, U> by ReturningScopeImpl(_type), FilterScope by FilterScopeImpl(_type)

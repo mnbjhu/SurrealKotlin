@@ -12,6 +12,7 @@ class CodeBlockScope {
     }
     fun getBlockText() = "$generated}"
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <T, U: Reference<T>>U.getValue(thisRef: Any?, property: KProperty<*>): U =
         this.createReference("\$${property.name}").also { +createReference("LET \$${property.name} = ${getReference()}") } as U
 }

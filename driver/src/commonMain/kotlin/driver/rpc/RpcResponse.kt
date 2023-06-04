@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonElement
 @Serializable(with = RpcResponseSerializer::class)
 sealed class RpcResponse {
 
-    abstract val id: String
+    abstract val id: String?
 
     @Serializable
     data class Success(override val id: String, val result: JsonElement): RpcResponse()
