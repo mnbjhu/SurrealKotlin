@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/driver/SurrealKotlin.driver.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/driver/SurrealKotlin.driver.jvmTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dsl/SurrealKotlin.dsl.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/dsl/SurrealKotlin.dsl.jvmTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/example/SurrealKotlin.example.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/example/SurrealKotlin.example.jvmTest.iml" />
     </modules>
   </component>
 </project>

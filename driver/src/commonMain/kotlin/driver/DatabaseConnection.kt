@@ -34,15 +34,11 @@ class DatabaseConnection(private val host: String, private val port: Int = 8000)
             context.launch {
                 it.incoming.receiveAsFlow().collect {
                     it as Frame.Text
-                    println(it.readText())
                     val response = try {
                         surrealJson.decodeFromString(RpcResponseSerializer, it.readText())
                     } catch (e: Exception) {
                         requests.forEach { (_, r) ->  r.cancel(CancellationException("Failed to decode incoming response: ${it.readText()}\n${e.message}"))}
                         throw e
-                    }
-                    if (response.id == null) {
-                        println(it)
                     }
                     val request = requests[response.id]
                     if (request == null) requests.forEach { (_, r) ->  r.cancel(CancellationException("Received a request with an unknown id: ${response.id} body: $response"))}

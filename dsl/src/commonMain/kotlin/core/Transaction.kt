@@ -12,6 +12,6 @@ suspend inline fun <reified T> DatabaseConnection.transaction(crossinline scope:
     val result = transaction.scope()
     with(transaction) { +result }
     val queryText = transaction.getQueryText()
-    val rawResponse = query(queryText).also { println(it) }
+    val rawResponse = query(queryText)
     return surrealJson.decodeFromJsonElement(rawResponse)
 }

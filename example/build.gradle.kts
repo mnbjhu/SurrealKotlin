@@ -69,7 +69,8 @@ kotlin {
         }
         val jvmMain by getting {
         }
-        val jvmTest by getting
+        val jvmTest by getting {
+        }
         val jsMain by getting {
         }
         val jsTest by getting
@@ -97,6 +98,7 @@ kotlin {
 
 dependencies  {
     add("kspCommonMainMetadata", project(":processor"))
+    add("kspJvmTest", project(":processor"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
