@@ -1,13 +1,10 @@
-import annotation.Table
 import core.getTableDefinition
 import core.transaction
 import driver.DatabaseConnection
 import kotlinx.coroutines.test.runTest
-import scopes.create
 import types.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 
 class BasicTest {
 
@@ -34,6 +31,4 @@ class BasicTest {
         println(getTableDefinition(user).getDefinition())
     }
 }
-
-
 

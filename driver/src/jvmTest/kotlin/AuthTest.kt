@@ -1,4 +1,4 @@
-import driver.DatabaseConnection
+import uk.gibby.driver.DatabaseConnection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

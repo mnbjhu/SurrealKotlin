@@ -1,11 +1,10 @@
 import core.transaction
-import driver.DatabaseConnection
+import uk.gibby.driver.DatabaseConnection
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import scopes.None
-import scopes.insert
 import kotlin.system.measureTimeMillis
 
 
@@ -20,7 +19,8 @@ class PerformanceTest {
         }
         val users = (0..100000).map { UserTable(it.toLong(), "user$it", "password$it") }
         runBlocking {
-            userTable.delete()
+            db.transaction { userTable.delete() }
+
             measureTimeMillis {
                 db.transaction {
                     userTable.insert(users)
@@ -41,7 +41,7 @@ class PerformanceTest {
                 signInAsRoot("root", "root")
             }
             runBlocking {
-                userTable.delete()
+                db.transaction { userTable.delete() }
                 measureTimeMillis {
                     for(i in 0..100000) {
                         db.transaction {
@@ -64,8 +64,7 @@ class PerformanceTest {
                 use("test", "performance")
                 signInAsRoot("root", "root")
             }
-            userTable.delete()
-
+            db.transaction { userTable.delete() }
             measureTimeMillis {
                 runBlocking {
                     for(i in 0..100000) {

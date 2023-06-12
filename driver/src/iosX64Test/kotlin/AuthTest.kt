@@ -1,4 +1,4 @@
-import driver.DatabaseConnection
+import uk.gibby.driver.DatabaseConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

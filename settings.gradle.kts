@@ -1,3 +1,3 @@
 
 rootProject.name = "SurrealKotlin"
-include("driver", "dsl", "annotation", "processor", "example", "docs")
+include("driver", "dsl", "processor", "example", "docs")
