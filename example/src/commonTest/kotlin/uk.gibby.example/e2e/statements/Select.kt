@@ -1,56 +1,58 @@
 package uk.gibby.example.e2e.statements
 
+import actedIn
 import uk.gibby.example.e2e.DatabaseTest
 import uk.gibby.example.e2e.statements.Relate.Companion.`RELATE $from - $with - $to`
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
+import movie
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be instance of`
 import org.amshove.kluent.`should contain same`
 import org.amshove.kluent.`should match`
 import org.junit.jupiter.api.Test
+import person
 import schema.*
+import uk.gibby.dsl.core.transaction
 import uk.gibby.dsl.model.Linked
-import uk.gibby.dsl.types.STAR
-import uk.gibby.dsl.types.eq
-import uk.gibby.dsl.types.`o-→`
-import uk.gibby.dsl.types.`←-o`
+import uk.gibby.dsl.types.*
 import uk.gibby.example.schema.Directed
 import uk.gibby.example.schema.Person
+import kotlin.test.Test
 
 class Select: DatabaseTest() {
 
     @Test
-    fun selectAllFromTableId() {
-        `SELECT all FROM $table`()
+    fun testSelectAllFromTable() {
+        selectAllFromTable()
     }
 
     @Test
-    fun selectProjectionFromTableId() {
+    fun testSelectProjectionFromTableId() {
         `SELECT $projection FROM $table`()
     }
 
     @Test
-    fun selectRelatedTableIds() {
+    fun testSelectRelatedTableIds() {
         `SELECT $from - $with - $to FROM $table`()
     }
 
     @Test
-    fun selectRelatedTable() {
+    fun testSelectRelatedTable() {
         `SELECT $from - $with - $to all FROM $table`()
     }
 
     @Test
-    fun selectRelationId() {
+    fun testSelectRelationId() {
         `SELECT $from - $with FROM $table`()
     }
 
     @Test
-    fun selectPath() {
+    fun testSelectPath() {
         `SELECT $path FROM $table`()
     }
 
-    fun `SELECT all FROM $table`(){
+    suspend fun selectAllFromTable(){
         `RELATE $from - $with - $to`(db)
         runBlocking {
             db.transaction {
@@ -64,31 +66,28 @@ class Select: DatabaseTest() {
                 rating `should be equal to` 8.9
             }
     }
-    fun `SELECT $projection FROM $table`(){
+    suspend fun selectProjectionFromTable(){
         `RELATE $from - $with - $to`(db)
-        runBlocking {
             db.transaction {
                 movie.select { title }
             }
-        } `should contain same` listOf("Pulp Fiction")
+         `should contain same` listOf("Pulp Fiction")
     }
 
-    fun `SELECT $from - $with - $to FROM $table`(){
-        `RELATE $from - $with - $to`(db)
-        runBlocking {
-            db.transaction {
-                person.select {
-                    where(name eq "John Travolta")
-                    `o-→`(actedIn).`o-→`(movie)
-                }
-            }.first().first().apply {
-                `should be instance of`<Linked.Reference<*>>()
-                id `should match` "^Movie:.*".toRegex()
+    suspend fun selectRelatedFromTable(){
+        Relate.relate(db)
+        db.transaction {
+            person.select {
+                where(it.name eq "John Travolta")
+                it.arrowTo(actedIn).arrowTo(movie)
             }
+        }.first().first().apply {
+            `should be instance of`<Linked.Reference<*>>()
+            id `should match` "^Movie:.*".toRegex()
         }
     }
 
-    fun `SELECT $from - $with - $to all FROM $table`(){
+    suspend fun selectAllRelatedFromTable(){
         `RELATE $from - $with - $to`(db)
         runBlocking {
             db.transaction {
@@ -107,7 +106,7 @@ class Select: DatabaseTest() {
         }
     }
 
-    fun `SELECT $from - $with FROM $table`(){
+    suspend fun selectRelationFromTable(){
         `RELATE $from - $with - $to`(db)
         runBlocking {
             db.transaction {
@@ -123,7 +122,7 @@ class Select: DatabaseTest() {
         }
     }
 
-    fun `SELECT $path FROM $table`(){
+    suspend fun selectPathFromTable(){
         `RELATE $from - $with - $to`(db)
         runBlocking {
             db.transaction {

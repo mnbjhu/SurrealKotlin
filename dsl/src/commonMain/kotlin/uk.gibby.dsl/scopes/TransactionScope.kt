@@ -92,7 +92,7 @@ class TransactionScope {
         return ListType(recordType, "(SELECT * FROM $name${filter.getFilterString()})")
     }
 
-    fun <a, A: Reference<a>, T, U: RecordType<T>, r, R: Reference<r>>Table<T, U>.select(projection: FilterScope.(U) -> R): ListType<r, R> {
+    fun <T, U: RecordType<T>, r, R: Reference<r>>Table<T, U>.select(projection: FilterScope.(U) -> R): ListType<r, R> {
         val filter = FilterScopeImpl(recordType)
         val toSelect = with(filter) {
             projection(recordType)

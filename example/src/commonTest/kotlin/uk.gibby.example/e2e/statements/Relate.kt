@@ -1,37 +1,36 @@
 package uk.gibby.example.e2e.statements
 
+import ActedIn
+import actedIn
 import uk.gibby.example.e2e.DatabaseTest
-import uk.gibby.example.e2e.statements.Create.Companion.`CREATE $table SET ( $param = $value )`
-import kotlinx.coroutines.runBlocking
-import org.amshove.kluent.`should be equal to`
-import org.junit.jupiter.api.Test
-import uk.gibby.example.schema.ActedIn
-import schema.actedIn
-import schema.movie
-import schema.person
-import uk.gibby.dsl.driver.DatabaseConnection
+import kotlinx.coroutines.test.runTest
+import movie
+import person
+import uk.gibby.driver.DatabaseConnection
+import uk.gibby.dsl.core.transaction
 import uk.gibby.dsl.types.eq
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 open class Relate: DatabaseTest() {
 
     @Test
-    fun basicRelateTest() {
-        `RELATE $from - $with - $to`(db)
+    fun basicRelateTest() = runTest {
+        relate(db)
     }
 
     companion object {
 
-        fun `RELATE $from - $with - $to`(db: DatabaseConnection){
-            `CREATE $table SET ( $param = $value )`(db)
-            runBlocking {
-                db.transaction {
-                    val johnTravolta by person.selectAll { where(name eq "John Travolta") }
-                    val samLJackson by person.selectAll { where(name eq "Samuel L. Jackson") }
-                    val pulpFiction by movie.selectAll { where(title eq "Pulp Fiction") }
-                    +relate(johnTravolta, actedIn, pulpFiction, ActedIn(role = "Vincent Vega"))
-                    relate(samLJackson, actedIn, pulpFiction, ActedIn(role = "Jules Winfield"))
-                }.first() `should be equal to` ActedIn(role = "Jules Winfield")
-            }
+        suspend fun relate(db: DatabaseConnection){
+            Create.createTableWithBuilder(db)
+            val result = db.transaction {
+                val johnTravolta by person.selectAll { where(it.name eq "John Travolta") }
+                val samLJackson by person.selectAll { where(it.name eq "Samuel L. Jackson") }
+                val pulpFiction by movie.selectAll { where(it.title eq "Pulp Fiction") }
+                +relate(johnTravolta, actedIn, pulpFiction, ActedIn(role = "Vincent Vega"))
+                relate(samLJackson, actedIn, pulpFiction, ActedIn(role = "Jules Winfield"))
+            }.first()
+            assertEquals(ActedIn(role = "Jules Winfield"), result)
         }
     }
 

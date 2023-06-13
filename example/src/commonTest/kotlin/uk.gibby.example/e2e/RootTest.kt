@@ -1,31 +1,24 @@
 package uk.gibby.example.e2e
 
+import UserCredentials
+import UserDetails
+import kotlinx.coroutines.test.runTest
 import uk.gibby.example.e2e.types.ContainerTest
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
-import org.junit.jupiter.api.BeforeEach
-import org.testcontainers.containers.GenericContainer
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
+import uk.gibby.driver.DatabaseConnection
 import uk.gibby.example.schema.SurrealTvSchema
-import uk.gibby.example.schema.UserCredentials
-import uk.gibby.example.schema.UserDetails
-import uk.gibby.dsl.driver.DatabaseConnection
-import uk.gibby.dsl.model.auth.RootAuth
+import kotlin.test.BeforeTest
 
-
-@Testcontainers
 abstract class DatabaseTest {
 
     protected val testUserCredentials = UserCredentials("mnbjhu", "testpass")
     protected val testUserDetails = UserDetails("James", "Gibson", Instant.parse("1999-03-31T00:00:00Z"), "james.gibson@test.com", "441234567890")
     protected val databaseName = this@DatabaseTest::class.simpleName.toString()
-    protected val db = DatabaseConnection(surrealDb.host, port = ContainerTest.surrealDb.getMappedPort(8000))
+    protected val db = DatabaseConnection("localhost", port = ContainerTest.surrealDb.getMappedPort(8000))
     open suspend fun setupDatabase() {
-        runBlocking {
+        runTest {
             db.connect()
-            db.signInAsRoot(testRootAuth)
+            db.signInAsRoot("root", "root")
             db.removeDatabase(namespaceName, databaseName)
             db.defineDatabase(namespaceName, databaseName)
             db.use(namespaceName, databaseName)
@@ -33,24 +26,14 @@ abstract class DatabaseTest {
         }
     }
 
-    @BeforeEach
+    @BeforeTest
     fun setup(){
-        runBlocking {
-            setupDatabase()
-        }
+        runTest { setupDatabase() }
     }
 
 
     companion object {
-        val testRootAuth = RootAuth("root", "root")
         const val namespaceName = "e2e_tests"
-
-        @Container
-        var surrealDb: GenericContainer<*> = GenericContainer<Nothing>(DockerImageName.parse("surrealdb/surrealdb:1.0.0-beta.9-20230402")).apply {
-            withExposedPorts(8000)
-            withCommand("start")
-        }
-
     }
 }
 

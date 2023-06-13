@@ -1,39 +1,39 @@
 package uk.gibby.example.e2e.statements
 
+import Genre
+import genre
+import kotlinx.coroutines.test.runTest
 import uk.gibby.example.e2e.DatabaseTest
-import uk.gibby.example.e2e.statements.Create.Companion.`CREATE $table SET ( $param = $value )`
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should be instance of`
-import org.amshove.kluent.`should contain same`
-import org.junit.jupiter.api.Test
-import uk.gibby.example.schema.Genre
-import schema.movie
+import movie
+import uk.gibby.dsl.core.transaction
 import uk.gibby.dsl.model.Linked
+import kotlin.reflect.KClass
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Fetch: DatabaseTest() {
     @Test
-    fun basicFetch() {
-        `CREATE $table SET ( $param = $value )`(db)
-        runBlocking {
-            db.transaction {
-                movie.selectAll { fetch(genres) }
-            }.also { it.size `should be equal to` 1 }.first()
-                .apply {
-                    title `should be equal to` "Pulp Fiction"
-                    released `should be equal to` Instant.parse("1994-10-21T00:00:00Z")
-                    rating `should be equal to` 8.9
-                    genres.size `should be equal to` 3
-                    genres.map {
-                        it `should be instance of` Linked.Actual::class
-                        it as Linked.Actual<*>
-                        val genre = it.result
-                        genre `should be instance of` Genre::class
-                        genre as Genre
-                        genre.name
-                    } `should contain same` listOf("Action", "Thriller", "Comedy")
+    fun basicFetch() = runTest {
+        Create.createTableWithBuilder(db)
+        db.transaction {
+            movie.selectAll { fetch(it.genres) }
+        }.also {
+            assertEquals(1, it.size)
+        }.first()
+            .apply {
+                assertEquals("Pulp Fiction", title)
+                assertEquals(Instant.parse("1994-10-21T00:00:00Z"), released)
+                assertEquals(8.9, rating)
+                assertEquals(3, genres.size)
+                val genreNames = genres.map {
+                    assertEquals<KClass<*>>(Linked.Actual::class, it::class)
+                    it as Linked.Actual<*>
+                    assertEquals(Genre::class, it.result!!::class)
+                    assertEquals<KClass<*>>(Genre::class, genre::class)
+                    (it.result as Genre).name
                 }
-        }
+                assertEquals(listOf("Action", "Thriller", "Comedy"), genreNames)
+            }
     }
 }

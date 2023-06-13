@@ -1,23 +1,24 @@
 package uk.gibby.example.e2e.statements
 
+import Genre
+import genre
 import uk.gibby.example.e2e.DatabaseTest
-import kotlinx.coroutines.runBlocking
-import org.amshove.kluent.`should contain same`
-import org.junit.jupiter.api.Test
-import uk.gibby.example.schema.Genre
-import schema.genre
+import kotlinx.coroutines.test.runTest
+import uk.gibby.dsl.core.transaction
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Insert: DatabaseTest(){
 
     @Test
     fun basicInsert() {
-        `INSERT INTO $table $data`()
+        insertInto()
     }
 
-    fun `INSERT INTO $table $data`() {
-        runBlocking {
+    fun insertInto() {
+        runTest {
             val genres = listOf(Genre("Action"), Genre("Horror"), Genre("Comedy"), Genre("Sci-Fi"))
-            db.transaction { genre.insert(genres) } `should contain same` genres
+            assertEquals(genres, db.transaction { genre.insert(genres) } )
         }
     }
 }

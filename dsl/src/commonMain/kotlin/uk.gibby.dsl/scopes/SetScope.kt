@@ -26,11 +26,6 @@ open class SetScope {
         return None
     }
 
-    infix fun <T, U : Reference<T>> ListType<T, U>.setAs(value: ListType<T, U>): UnitType {
-        text += "${getReference()} = ${value.getReference()},"
-        return None
-    }
-
     inline infix fun <reified T> Reference<T>.setAs(value: T): UnitType {
         _addParam("${getReference()} = ${surrealJson.encodeToString(value)},")
         return None

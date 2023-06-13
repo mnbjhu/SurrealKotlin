@@ -4,12 +4,10 @@ import Genre
 import Person
 import genre
 import uk.gibby.example.e2e.DatabaseTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import movie
-import org.amshove.kluent.`should be equal to`
 import person
-import schema.*
 import uk.gibby.driver.DatabaseConnection
 import uk.gibby.dsl.core.transaction
 import kotlin.test.Test
@@ -18,18 +16,18 @@ import kotlin.test.assertEquals
 open class Create: DatabaseTest() {
 
     @Test
-    fun testCreateContent(){
-        `CREATE $table CONTENT $data`(db)
+    fun testCreateContent() = runTest {
+        createContent(db)
     }
 
     @Test
-    fun testCreateContentWithId(){
-        `CREATE $table_id CONTENT $data`(db)
+    fun testCreateContentWithId() = runTest {
+        createTableIdContent(db)
     }
 
     @Test
-    fun testCreateWithReferences() {
-        `CREATE $table SET ( $param = $value )`(db)
+    fun testCreateWithReferences() = runTest {
+        createTableWithBuilder(db)
     }
 
 
@@ -58,7 +56,7 @@ open class Create: DatabaseTest() {
                 db.transaction {
                     movie.create {
                         it.title setAs "Pulp Fiction"
-                        it.genres setAs genre.select { _ -> it.id }
+                        it.genres setAs genre.select { it.id }
                         it.released setAs Instant.parse("1994-10-21T00:00:00Z")
                         it.rating setAs 8.9
                     }
